@@ -227,6 +227,7 @@
                             </option>
                         </select>
                         <select v-model="selectedMonth" class="filter-select">
+                            <option value="all">Anno intero</option>
                             <option v-for="month in availableMonths" :key="month" :value="month">
                                 {{ getMonthName(month) }}
                             </option>
@@ -256,7 +257,7 @@
                     </div>
                     
                     <div class="table-container">
-                        <h3>Dettaglio {{ getMonthName(selectedMonth) }} {{ selectedYear }}</h3>
+                        <h3>Dettaglio {{ selectedMonth === 'all' ? 'Anno intero' : getMonthName(selectedMonth) }} {{ selectedYear }}</h3>
                         <div class="table-wrapper">
                             <table class="expenses-table">
                                 <thead>
@@ -285,7 +286,7 @@
                                     <tr>
                                         <td colspan="2"><strong>Totale</strong></td>
                                         <td class="amount-col">
-                                            <strong>€{{ (monthlyIncomeTotals[selectedYear]?.[selectedMonth] || 0) - monthlyTotal }}</strong>
+                                            <strong>€{{ selectedMonth === 'all' ? yearlyBalance[selectedYear] : (monthlyIncomeTotals[selectedYear]?.[selectedMonth] || 0) - monthlyTotal }}</strong>
                                         </td>
                                         <td></td>
                                     </tr>

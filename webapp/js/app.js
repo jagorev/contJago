@@ -118,6 +118,12 @@ createApp({
             return balance;
         },
         filteredIncomes() {
+            if (this.selectedMonth === 'all') {
+                return this.incomes.filter(income => {
+                    const incomeYear = new Date(income.date).getFullYear();
+                    return incomeYear === this.selectedYear;
+                });
+            }
             if (this.monthlyIncomeTotals[this.selectedYear] && this.monthlyIncomeTotals[this.selectedYear][this.selectedMonth]) {
                 return this.incomes.filter(income => {
                     const incomeYear = new Date(income.date).getFullYear();
@@ -128,6 +134,12 @@ createApp({
             return [];
         },
         filteredPurchases() {
+            if (this.selectedMonth === 'all') {
+                return this.purchases.filter(purchase => {
+                    const purchaseYear = new Date(purchase.date).getFullYear();
+                    return purchaseYear === this.selectedYear;
+                });
+            }
             if (this.purchasesByYear[this.selectedYear] && this.purchasesByYear[this.selectedYear][this.selectedMonth]) {
                 return this.purchasesByYear[this.selectedYear][this.selectedMonth];
             }
@@ -135,6 +147,9 @@ createApp({
         },
         
         monthlyTotal() {
+            if (this.selectedMonth === 'all') {
+                return this.filteredPurchases.reduce((total, purchase) => total + purchase.amount, 0);
+            }
             return this.filteredPurchases.reduce((total, purchase) => total + purchase.amount, 0);
         },
         
