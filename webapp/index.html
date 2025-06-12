@@ -231,37 +231,27 @@
                                 {{ getMonthName(month) }}
                             </option>
                         </select>
+                        <select v-model="selectedReportType" class="filter-select">
+                            <option value="all">Entrate e Uscite</option>
+                            <option value="incomes">Solo Entrate</option>
+                            <option value="purchases">Solo Uscite</option>
+                        </select>
                     </div>
                     
                     <div class="summary-grid">
-                        <div class="summary-card green">
+                        <div class="summary-card green" v-if="selectedReportType === 'all' || selectedReportType === 'incomes'">
                             <h3>Totale Entrate {{ selectedYear }}</h3>
                             <p class="amount">€{{ yearlyIncomeTotals[selectedYear]?.toFixed(2) || '0.00' }}</p>
                         </div>
-                        <div class="summary-card blue">
+                        <div class="summary-card blue" v-if="selectedReportType === 'all' || selectedReportType === 'purchases'">
                             <h3>Totale Spese {{ selectedYear }}</h3>
                             <p class="amount">€{{ yearlyTotals[selectedYear]?.toFixed(2) || '0.00' }}</p>
                         </div>
-                        <div class="summary-card purple">
+                        <div class="summary-card purple" v-if="selectedReportType === 'all'">
                             <h3>Bilancio {{ selectedYear }}</h3>
                             <p class="amount" :class="yearlyBalance[selectedYear] >= 0 ? 'positive' : 'negative'">
                                 €{{ yearlyBalance[selectedYear]?.toFixed(2) || '0.00' }}
                             </p>
-                        </div>
-                    </div>
-                    
-                    <div class="monthly-overview">
-                        <h3>Bilancio Mensile {{ getMonthName(selectedMonth) }} {{ selectedYear }}</h3>
-                        <div class="monthly-grid">
-                            <div v-for="month in availableMonths" :key="month" 
-                                 class="monthly-item"
-                                 :class="{ active: month === selectedMonth }"
-                                 @click="selectedMonth = month">
-                                <div class="month-name">{{ getMonthName(month) }}</div>
-                                <div class="month-total" :class="monthlyBalance[selectedYear]?.[month] >= 0 ? 'positive' : 'negative'">
-                                    €{{ monthlyBalance[selectedYear]?.[month]?.toFixed(2) || '0.00' }}
-                                </div>
-                            </div>
                         </div>
                     </div>
                     
@@ -278,20 +268,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="income in filteredIncomes" :key="income._id">
+                                    <tr v-for="income in filteredIncomes" :key="income._id" v-if="selectedReportType === 'all' || selectedReportType === 'incomes'">
                                         <td>{{ formatDate(income.date) }}</td>
                                         <td>{{ getSourceName(income.source) }}</td>
                                         <td class="amount-col income">€{{ income.amount.toFixed(2) }}</td>
                                         <td>{{ income.notes || '-' }}</td>
                                     </tr>
-                                    <tr v-for="purchase in filteredPurchases" :key="purchase._id">
+                                    <tr v-for="purchase in filteredPurchases" :key="purchase._id" v-if="selectedReportType === 'all' || selectedReportType === 'purchases'">
                                         <td>{{ formatDate(purchase.date) }}</td>
                                         <td>{{ purchase.place?.name || '-' }}</td>
                                         <td class="amount-col">€{{ purchase.amount.toFixed(2) }}</td>
                                         <td>{{ purchase.notes || '-' }}</td>
                                     </tr>
                                 </tbody>
-                                <tfoot>
+                                <tfoot v-if="selectedReportType === 'all'">
                                     <tr>
                                         <td colspan="2"><strong>Totale</strong></td>
                                         <td class="amount-col">
