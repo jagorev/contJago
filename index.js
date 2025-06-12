@@ -7,21 +7,23 @@ require('dotenv').config();
 // Import routes
 const placesRoutes = require('./routes/routePlace');
 const purchasesRoutes = require('./routes/routePurchase');
+const incomesRoutes = require('./routes/routeIncome'); // Aggiunto
 
 const app = express();
 // Azure usa process.env.PORT automaticamente
 const PORT = process.env.PORT || 8080;
-const API_BASE_URL = process.env.API_BASE_URL || `https://${process.env.WEBSITE_HOSTNAME}` || `http://localhost:${PORT}`;
+const API_BASE_URL = process.env.API_BASE_URL
+  || (process.env.WEBSITE_HOSTNAME
+      ? `https://${process.env.WEBSITE_HOSTNAME}`
+      : `http://localhost:${PORT}`);
 
 // Middleware
 app.use(cors({
   origin: [
-    'http://localhost:3000', 
-    'http://127.0.0.1:3000', 
-    'http://localhost:8080',
+    'http://localhost:3000',
     `http://localhost:${PORT}`,
-    `https://${process.env.WEBSITE_HOSTNAME}`, // Azure hostname
-    'file://'
+    `https://${process.env.WEBSITE_HOSTNAME}`, // Azure
+    API_BASE_URL
   ],
   credentials: true
 }));
@@ -52,6 +54,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/places', placesRoutes);
 app.use('/api/purchases', purchasesRoutes);
+app.use('/api/incomes', incomesRoutes); // Aggiunto
 
 // Health check endpoint per Azure
 app.get('/health', (req, res) => {
