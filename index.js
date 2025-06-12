@@ -11,17 +11,18 @@ const purchasesRoutes = require('./routes/routePurchase');
 const app = express();
 // Azure usa process.env.PORT automaticamente
 const PORT = process.env.PORT || 8080;
-const API_BASE_URL = process.env.API_BASE_URL || `https://${process.env.WEBSITE_HOSTNAME}` || `http://localhost:${PORT}`;
+const API_BASE_URL = process.env.API_BASE_URL
+  || (process.env.WEBSITE_HOSTNAME
+      ? `https://${process.env.WEBSITE_HOSTNAME}`
+      : `http://localhost:${PORT}`);
 
 // Middleware
 app.use(cors({
   origin: [
-    'http://localhost:3000', 
-    'http://127.0.0.1:3000', 
-    'http://localhost:8080',
+    'http://localhost:3000',
     `http://localhost:${PORT}`,
-    `https://${process.env.WEBSITE_HOSTNAME}`, // Azure hostname
-    'file://'
+    `https://${process.env.WEBSITE_HOSTNAME}`, // Azure
+    API_BASE_URL
   ],
   credentials: true
 }));
