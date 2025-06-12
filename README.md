@@ -106,7 +106,7 @@ The project provides an intuitive interface for managing financial data, offerin
     │   ├── js/          # JavaScript files
     │   │   └── app.js   # Vue.js application logic
     │   └── index.html   # Main HTML file
-    ├── imgs/ 
+    ├── imgs/            # Screenshots used in the README
     ├── .env             # Environment variables
     ├── index.js         # Main server file
     ├── package.json     # Project metadata and dependencies
@@ -114,7 +114,7 @@ The project provides an intuitive interface for managing financial data, offerin
 
 ---
 
-## 🌟 Future Improvements
+## Future Improvements
 - **🔒 User Authentication**: Add secure login and user-specific data management.
 - **📈 Data Visualization**: Implement charts and graphs for better insights into financial data.
 - **📤 Export Functionality**: Allow users to export reports as PDF or Excel files.
