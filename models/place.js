@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
 
-const postoSchema = new mongoose.Schema({
-  nome: {
+const placeSchema = new mongoose.Schema({
+  name: {
     type: String,
     required: true,
     trim: true
   },
-  citta: {
+  city: {
     type: String,
     required: true,
     trim: true
   },
-  indirizzo: {
+  address: {
     type: String,
     trim: true
   },
-  note: {
+  notes: {
     type: String,
     trim: true
   }
@@ -23,6 +23,6 @@ const postoSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const Posto = mongoose.model('Posto', postoSchema);
+const Place = mongoose.model('Place', placeSchema);
 
-module.exports = Posto;
+module.exports = Place;

@@ -1,22 +1,22 @@
 const mongoose = require('mongoose');
 
-const spesaSchema = new mongoose.Schema({
-  posto: {
+const purchaseSchema = new mongoose.Schema({
+  place: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Posto',
+    ref: 'Place',
     required: true
   },
-  data: {
+  date: {
     type: Date,
     required: true,
     default: Date.now
   },
-  importo: {
+  amount: {
     type: Number,
     required: true,
     min: 0
   },
-  note: {
+  notes: {
     type: String,
     trim: true
   }
@@ -24,6 +24,6 @@ const spesaSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const Spesa = mongoose.model('Spesa', spesaSchema);
+const Purchase = mongoose.model('Purchase', purchaseSchema);
 
-module.exports = Spesa;
+module.exports = Purchase;
