@@ -19,7 +19,7 @@
         <div class="container">
             <div class="header">
                 <h1>💰 contJago</h1>
-                <p>Finalmente si tiene conto di ciò che si spende, come fanno le persone serie.</p>
+                <p>Finalmente si ha il conto di ciò che si spende, come fanno le persone serie.</p>
             </div>
             
             <div class="tabs">
@@ -28,6 +28,9 @@
                 </button>
                 <button class="tab" :class="{ active: activeTab === 'purchases' }" @click="activeTab = 'purchases'">
                     🛒 Spese
+                </button>
+                <button class="tab" :class="{ active: activeTab === 'incomes' }" @click="activeTab = 'incomes'">
+                    💸 Entrate
                 </button>
                 <button class="tab" :class="{ active: activeTab === 'reports' }" @click="activeTab = 'reports'">
                     📊 Report
@@ -151,106 +154,154 @@
                     </div>
                 </div>
                 
-                <!-- Reports Tab -->
-                <div v-if="activeTab === 'reports'">
-                    <h2>Report Spese</h2>
+                <!-- Incomes Tab -->
+                <div v-if="activeTab === 'incomes'">
+                    <h2>Gestione Entrate</h2>
                     
-                    <div class="filters-container">
-                        <div class="form-group">
-                            <label for="yearSelect">Anno</label>
-                            <select id="yearSelect" v-model="selectedYear" class="filter-select">
-                                <option v-for="year in availableYears" :key="year" :value="year">
-                                    {{ year }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="monthSelect">Mese</label>
-                            <select id="monthSelect" v-model="selectedMonth" class="filter-select">
-                                <option v-for="month in availableMonths" :key="month" :value="month">
-                                    {{ getMonthName(month) }}
-                                </option>
-                            </select>
-                        </div>
+                    <div v-if="message" :class="messageType">
+                        {{ message }}
                     </div>
                     
-                    <!-- Summary Cards -->
+                    <form @submit.prevent="saveIncome" style="margin-bottom: 30px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="incomeSource">Fonte</label>
+                                <select id="incomeSource" v-model="incomeForm.source" required>
+                                    <option value="">Seleziona una fonte</option>
+                                    <option value="ripetizioni">Ripetizioni</option>
+                                    <option value="pagamenti per lavori">Pagamenti per lavori</option>
+                                    <option value="regali">Regali</option>
+                                    <option value="pagamenti online">Pagamenti online</option>
+                                    <option value="refund">Rimborsi</option>
+                                    <option value="other">Altro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="incomeAmount">Importo (€)</label>
+                                <input type="number" id="incomeAmount" v-model="incomeForm.amount" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="incomeDate">Data</label>
+                                <input type="date" id="incomeDate" v-model="incomeForm.date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="incomeNotes">Note (opzionali)</label>
+                                <textarea id="incomeNotes" v-model="incomeForm.notes" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">
+                            {{ editingIncome ? 'Aggiorna Entrata' : 'Aggiungi Entrata' }}
+                        </button>
+                        <button v-if="editingIncome" type="button" class="btn btn-danger" @click="cancelEditIncome">
+                            Annulla
+                        </button>
+                    </form>
+                    
+                    <div v-if="loading" class="loading">Caricamento...</div>
+                    
+                    <div v-else>
+                        <h3>Le tue Entrate ({{ incomes.length }})</h3>
+                        <div v-for="income in incomes" :key="income._id" class="list-item">
+                            <h3>€{{ income.amount.toFixed(2) }}</h3>
+                            <p><strong>Fonte:</strong> {{ getSourceName(income.source) }}</p>
+                            <p><strong>Data:</strong> {{ formatDate(income.date) }}</p>
+                            <p v-if="income.notes"><strong>Note:</strong> {{ income.notes }}</p>
+                            <div class="actions">
+                                <button class="btn" @click="editIncome(income)">Modifica</button>
+                                <button class="btn btn-danger" @click="deleteIncome(income._id)">Elimina</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reports Tab -->
+                <div v-if="activeTab === 'reports'">
+                    <h2>Report</h2>
+                    
+                    <div class="filters-container">
+                        <select v-model="selectedYear" class="filter-select">
+                            <option v-for="year in availableYears" :key="year" :value="year">
+                                {{ year }}
+                            </option>
+                        </select>
+                        <select v-model="selectedMonth" class="filter-select">
+                            <option v-for="month in availableMonths" :key="month" :value="month">
+                                {{ getMonthName(month) }}
+                            </option>
+                        </select>
+                    </div>
+                    
                     <div class="summary-grid">
+                        <div class="summary-card green">
+                            <h3>Totale Entrate {{ selectedYear }}</h3>
+                            <p class="amount">€{{ yearlyIncomeTotals[selectedYear]?.toFixed(2) || '0.00' }}</p>
+                        </div>
                         <div class="summary-card blue">
-                            <h3>Totale Anno {{ selectedYear }}</h3>
+                            <h3>Totale Spese {{ selectedYear }}</h3>
                             <p class="amount">€{{ yearlyTotals[selectedYear]?.toFixed(2) || '0.00' }}</p>
                         </div>
                         <div class="summary-card purple">
-                            <h3>{{ getMonthName(selectedMonth) }} {{ selectedYear }}</h3>
-                            <p class="amount">€{{ monthlyTotal.toFixed(2) }}</p>
-                        </div>
-                        <div class="summary-card green">
-                            <h3>Spese nel Mese</h3>
-                            <p class="amount">{{ filteredPurchases.length }}</p>
+                            <h3>Bilancio {{ selectedYear }}</h3>
+                            <p class="amount" :class="yearlyBalance[selectedYear] >= 0 ? 'positive' : 'negative'">
+                                €{{ yearlyBalance[selectedYear]?.toFixed(2) || '0.00' }}
+                            </p>
                         </div>
                     </div>
                     
-                    <!-- Monthly Totals for Selected Year -->
                     <div class="monthly-overview">
-                        <h3>Totali Mensili {{ selectedYear }}</h3>
+                        <h3>Bilancio Mensile {{ getMonthName(selectedMonth) }} {{ selectedYear }}</h3>
                         <div class="monthly-grid">
-                            <div v-for="month in [1,2,3,4,5,6,7,8,9,10,11,12]" :key="month" 
+                            <div v-for="month in availableMonths" :key="month" 
                                  class="monthly-item"
                                  :class="{ active: month === selectedMonth }"
                                  @click="selectedMonth = month">
                                 <div class="month-name">{{ getMonthName(month) }}</div>
-                                <div class="month-total">€{{ monthlyTotals[month]?.toFixed(2) || '0.00' }}</div>
+                                <div class="month-total" :class="monthlyBalance[selectedYear]?.[month] >= 0 ? 'positive' : 'negative'">
+                                    €{{ monthlyBalance[selectedYear]?.[month]?.toFixed(2) || '0.00' }}
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Expenses Table -->
-                    <div v-if="filteredPurchases.length > 0" class="table-container">
-                        <h3>Dettaglio Spese - {{ getMonthName(selectedMonth) }} {{ selectedYear }}</h3>
+                    <div class="table-container">
+                        <h3>Dettaglio {{ getMonthName(selectedMonth) }} {{ selectedYear }}</h3>
                         <div class="table-wrapper">
                             <table class="expenses-table">
                                 <thead>
                                     <tr>
                                         <th>Data</th>
-                                        <th>Posto</th>
-                                        <th>Città</th>
+                                        <th>Fonte/Posto</th>
                                         <th class="amount-col">Importo</th>
                                         <th>Note</th>
-                                        <th class="actions-col">Azioni</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(purchase, index) in filteredPurchases" :key="purchase._id" 
-                                        :class="{ even: index % 2 === 0 }">
-                                        <td class="date-col">{{ formatDate(purchase.date) }}</td>
-                                        <td class="place-col">{{ purchase.place?.name }}</td>
-                                        <td>{{ purchase.place?.city }}</td>
+                                    <tr v-for="income in filteredIncomes" :key="income._id">
+                                        <td>{{ formatDate(income.date) }}</td>
+                                        <td>{{ getSourceName(income.source) }}</td>
+                                        <td class="amount-col income">€{{ income.amount.toFixed(2) }}</td>
+                                        <td>{{ income.notes || '-' }}</td>
+                                    </tr>
+                                    <tr v-for="purchase in filteredPurchases" :key="purchase._id">
+                                        <td>{{ formatDate(purchase.date) }}</td>
+                                        <td>{{ purchase.place?.name || '-' }}</td>
                                         <td class="amount-col">€{{ purchase.amount.toFixed(2) }}</td>
-                                        <td class="notes-col">{{ purchase.notes || '-' }}</td>
-                                        <td class="actions-col">
-                                            <button class="btn-small" @click="editPurchase(purchase); activeTab = 'purchases'" title="Modifica">
-                                                ✏️
-                                            </button>
-                                            <button class="btn-small btn-danger" @click="deletePurchase(purchase._id)" title="Elimina">
-                                                🗑️
-                                            </button>
-                                        </td>
+                                        <td>{{ purchase.notes || '-' }}</td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
-                                    <tr class="total-row">
-                                        <td colspan="3"><strong>TOTALE MESE</strong></td>
-                                        <td class="amount-col"><strong>€{{ monthlyTotal.toFixed(2) }}</strong></td>
-                                        <td colspan="2"></td>
+                                    <tr>
+                                        <td colspan="2"><strong>Totale</strong></td>
+                                        <td class="amount-col">
+                                            <strong>€{{ (monthlyIncomeTotals[selectedYear]?.[selectedMonth] || 0) - monthlyTotal }}</strong>
+                                        </td>
+                                        <td></td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
-                    </div>
-                    
-                    <div v-else class="no-data">
-                        <h3>Nessuna spesa trovata per {{ getMonthName(selectedMonth) }} {{ selectedYear }}</h3>
-                        <p>Seleziona un altro mese o anno, oppure aggiungi delle spese.</p>
                     </div>
                 </div>
             </div>

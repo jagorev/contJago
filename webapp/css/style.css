@@ -139,7 +139,7 @@ input:focus, select:focus, textarea:focus {
     padding: 20px;
     margin-bottom: 15px;
     border-radius: 8px;
-    border-left: 4px solid #007bff;
+    border-left: 4px solid #28a745; /* Verde per entrate */
 }
 
 .list-item h3 {
@@ -295,13 +295,18 @@ input:focus, select:focus, textarea:focus {
     font-size: 14px;
 }
 
-.table-container {
-    margin-top: 30px;
+.monthly-item .month-total.positive {
+    color: #28a745;
+    font-weight: bold;
 }
 
-.table-container h3 {
-    margin-bottom: 20px;
-    color: #333;
+.monthly-item .month-total.negative {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.table-container {
+    margin-top: 30px;
 }
 
 .table-wrapper {
@@ -331,10 +336,6 @@ input:focus, select:focus, textarea:focus {
     letter-spacing: 0.5px;
 }
 
-.expenses-table th.amount-col {
-    color: white !important;
-}
-
 .expenses-table td {
     padding: 15px;
     border-bottom: 1px solid #e9ecef;
@@ -357,6 +358,10 @@ input:focus, select:focus, textarea:focus {
     text-align: right !important;
     font-weight: bold;
     color: #007bff;
+}
+
+.amount-col.income {
+    color: #28a745 !important;
 }
 
 .actions-col {
@@ -383,6 +388,11 @@ input:focus, select:focus, textarea:focus {
 
 .total-row {
     background: #007bff !important;
+    color: white !important;
+}
+
+.total-row.income {
+    background: #28a745 !important;
     color: white !important;
 }
 

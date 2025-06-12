@@ -7,6 +7,7 @@ require('dotenv').config();
 // Import routes
 const placesRoutes = require('./routes/routePlace');
 const purchasesRoutes = require('./routes/routePurchase');
+const incomesRoutes = require('./routes/routeIncome'); // Aggiunto
 
 const app = express();
 // Azure usa process.env.PORT automaticamente
@@ -53,6 +54,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/places', placesRoutes);
 app.use('/api/purchases', purchasesRoutes);
+app.use('/api/incomes', incomesRoutes); // Aggiunto
 
 // Health check endpoint per Azure
 app.get('/health', (req, res) => {
