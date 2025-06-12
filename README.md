@@ -11,15 +11,21 @@ The project provides an intuitive interface for managing financial data, offerin
 - Add, edit, and delete places where expenses occur.
 - View a list of all places with relevant details.
 
+![Places Screenshot](./imgs/posti.png)
+
 ### 🛒 **Expenses Management**
 - Record expenses with details such as amount, date, place, and notes.
 - Edit or delete expenses as needed.
 - View expenses grouped by month or year.
 
+![Expenses Screenshot](./imgs/spese.png)
+
 ### 💸 **Incomes Management**
 - Record incomes with details such as source, amount, date, and notes.
 - Edit or delete incomes as needed.
 - View incomes grouped by month or year.
+
+![Incomes Screenshot](./imgs/entrate.png)
 
 ### 📊 **Reports**
 - Generate detailed reports for selected months or entire years.
@@ -29,6 +35,8 @@ The project provides an intuitive interface for managing financial data, offerin
   - Both incomes and expenses
 - View monthly and yearly balances.
 - Interactive filters for selecting periods and report types.
+
+![Reports Screenshot](./imgs/report.png)
 
 ---
 
