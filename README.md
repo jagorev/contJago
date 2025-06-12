@@ -5,7 +5,7 @@ The project provides an intuitive interface for managing financial data, offerin
 
 ---
 
-## ✨ Features
+## Features
 
 ### 📍 **Places Management**
 - Add, edit, and delete places where expenses occur.
