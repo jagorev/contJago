@@ -106,6 +106,7 @@ The project provides an intuitive interface for managing financial data, offerin
     │   ├── js/          # JavaScript files
     │   │   └── app.js   # Vue.js application logic
     │   └── index.html   # Main HTML file
+    ├── imgs/ 
     ├── .env             # Environment variables
     ├── index.js         # Main server file
     ├── package.json     # Project metadata and dependencies
